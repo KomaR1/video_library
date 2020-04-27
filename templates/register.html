@@ -1,0 +1,20 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Create a new Account
+{% endblock %}
+
+
+{% block body %}
+
+<h1>Create a new Account</h1><br>
+
+<form action="" method="POST">
+        {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+        <br>
+            <button type="submit" class="btn btn-primary">Create Account!</button>
+</form>
+{% endblock %}
