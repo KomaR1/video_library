@@ -2,8 +2,9 @@ import random
 import string
 from wsgiref.util import FileWrapper
 
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+# from django.contrib.auth import authenticate, login, logout
+# from django.contrib.auth.models import User
+from account.models import User
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction, DatabaseError
 from django.shortcuts import render
@@ -11,7 +12,7 @@ from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
 
 from youtube_python.settings import MEDIA_ROOT
 from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, ComplainForm
-from .models import Video, Comment, Complain, UserProfile
+from .models import Video, Comment, Complain
 
 
 # class ProfileView(View):
@@ -60,10 +61,10 @@ class HomeView(View):
         return render(request, self.template_name, {'most_recent_videos': most_recent_videos})
 
 
-class LogoutView(View):
-    def get(self, request):
-        logout(request)
-        return HttpResponseRedirect('/')
+# class LogoutView(View):
+#     def get(self, request):
+#         logout(request)
+#         return HttpResponseRedirect('/')
 
 
 class VideoView(View):
@@ -149,7 +150,6 @@ class RegisterView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
-            full_name = form.cleaned_data['full_name']
             #new_user = User(username=username, email=email)
             #new_user.set_password(password)
             #new_user.save()
@@ -157,7 +157,6 @@ class RegisterView(View):
                 with transaction.atomic():
                     # All the database operations within this block are part of the transaction
                     user = User.objects.create_user(email=email, username=username, password=password)
-                    profile = UserProfile.objects.create(user=user, full_name=full_name)
             except DatabaseError:
                 # The transaction has failed. Handle appropriately
                 pass

@@ -18,7 +18,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # My apps
     'youtube',
+    'account',
+
+
+    # Django apps
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -56,6 +61,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'account.Account'
 
 WSGI_APPLICATION = 'youtube_python.wsgi.application'
 
