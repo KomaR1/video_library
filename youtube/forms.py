@@ -1,10 +1,10 @@
 from django import forms
 
 
-class UserForm(forms.Form):
-    email = forms.CharField(max_length=60)
-    full_name = forms.CharField(max_length=60)
-    birth = forms.DateTimeField(label='What is your birth date?', widget=forms.SelectDateWidget)
+# class UserForm(forms.Form):
+#     email = forms.CharField(max_length=60)
+#     full_name = forms.CharField(max_length=60)
+#     birth = forms.DateTimeField(label='What is your birth date?', widget=forms.SelectDateWidget)
 
 
 class LoginForm(forms.Form):
@@ -16,6 +16,8 @@ class RegisterForm(forms.Form):
     username = forms.CharField(label='Username', max_length=20)
     password = forms.CharField(label='Password', max_length=20)
     email = forms.CharField(label='Email', max_length=30)
+    full_name = forms.CharField(max_length=60)
+    #birth = forms.DateField()
 
 
 class CommentForm(forms.Form):

@@ -5,36 +5,34 @@ from wsgiref.util import FileWrapper
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
+from django.db import transaction, DatabaseError
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
 
 from youtube_python.settings import MEDIA_ROOT
-from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, ComplainForm, UserForm
+from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, ComplainForm
 from .models import Video, Comment, Complain, UserProfile
 
 
-class ProfileView(View):
-    template_name = 'profile.html'
-
-    def get(self, request):
-        if not request.user.is_authenticated:
-            return HttpResponseRedirect('/')
-        form = UserForm
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        print(User.object.get)
-        print(User.username)
-        print(User.password)
-        # pass filled out HTML-Form from View to LoginForm()
-        form = ProfileView(request.POST)
-        if form.is_valid():
-            # email = form.cleaned_data['email']
-            full_name = form.cleaned_data['full_name']
-            birth = form.cleaned_data['birth']
-            new_profile = UserProfile(full_name=full_name, birth=birth)
-            new_profile.user = User
-            new_profile.save()
+# class ProfileView(View):
+#     template_name = 'profile.html'
+#
+#     def get(self, request):
+#         if not request.user.is_authenticated:
+#             return HttpResponseRedirect('/')
+#         form = UserForm
+#         return render(request, self.template_name, {'form': form})
+#
+#     def post(self, request):
+#         # pass filled out HTML-Form from View to LoginForm()
+#         form = ProfileView(request.POST)
+#         if form.is_valid():
+#             # email = form.cleaned_data['email']
+#             full_name = form.cleaned_data['full_name']
+#             birth = form.cleaned_data['birth']
+#             new_profile = UserProfile(full_name=full_name, birth=birth)
+#             new_profile.user = User
+#             new_profile.save()
 #     if user is not None:
 #         # create a new entry in table 'logs'
 #         login(request, user)
@@ -151,9 +149,18 @@ class RegisterView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
-            new_user = User(username=username, email=email)
-            new_user.set_password(password)
-            new_user.save()
+            full_name = form.cleaned_data['full_name']
+            #new_user = User(username=username, email=email)
+            #new_user.set_password(password)
+            #new_user.save()
+            try:
+                with transaction.atomic():
+                    # All the database operations within this block are part of the transaction
+                    user = User.objects.create_user(email=email, username=username, password=password)
+                    profile = UserProfile.objects.create(user=user, full_name=full_name)
+            except DatabaseError:
+                # The transaction has failed. Handle appropriately
+                pass
             return HttpResponseRedirect('/login')
         return HttpResponse('This is Register view. POST Request.')
 

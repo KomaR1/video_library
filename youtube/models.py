@@ -7,10 +7,10 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=60)
-    birth = models.DateTimeField(blank=True, null=True)
+    #birth = models.DateField()
 
-    def __unicode__(self):
-        return self.user
+    # def __unicode__(self):
+    #     return self.user
 
 
 # @receiver(post_save, sender=User)
