@@ -14,7 +14,7 @@ class Video(models.Model):
     datetime = models.DateTimeField(auto_now=True, blank=False, null=False) #todo: auto_now=True
     views = models.PositiveIntegerField(default=0)
     user = models.ForeignKey('youtube.CustomUser', on_delete=models.CASCADE, related_name='users')
-    genre = models.ForeignKey('youtube.Genre', on_delete=models.CASCADE, related_name='genres')
+    # genre = models.ForeignKey('youtube.Genre', on_delete=models.CASCADE, related_name='genres')
 
 
 class Comment(models.Model):
@@ -33,3 +33,4 @@ class Complain(models.Model):
 
 class Genre(models.Model):
     text = models.TextField(max_length=20)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='video_id')
