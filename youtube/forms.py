@@ -1,5 +1,5 @@
 from django import forms
-
+YEARS = [x for x in range(1940,2021)]
 
 # class UserForm(forms.Form):
 #     email = forms.CharField(max_length=60)
@@ -17,7 +17,7 @@ class RegisterForm(forms.Form):
     password = forms.CharField(label='Password', max_length=20)
     email = forms.CharField(label='Email', max_length=30)
     full_name = forms.CharField(max_length=60)
-    #birth = forms.DateField()
+    birth = forms.DateField(widget=forms.SelectDateWidget(years=YEARS))
 
 
 class CommentForm(forms.Form):
@@ -28,6 +28,7 @@ class NewVideoForm(forms.Form):
     title = forms.CharField(label='Title', max_length=100)
     description = forms.CharField(label='Description', max_length=300)
     file = forms.FileField()
+    genre = forms.CharField(label='Genre', max_length=30)
 
 
 class ComplainForm(forms.Form):
