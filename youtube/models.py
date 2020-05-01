@@ -3,8 +3,16 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    full_name = models.CharField(max_length=60)
+    full_name = models.CharField(max_length=60, help_text='Enter your full name')
     birth = models.DateField(null=True, blank=True)
+
+
+class Genre(models.Model):
+    genre = models.CharField(max_length=20, help_text='Enter a video genre', unique=True)
+
+    class Meta:
+        verbose_name = 'genre'
+        verbose_name_plural = 'genres'
 
 
 class Video(models.Model):
@@ -14,7 +22,7 @@ class Video(models.Model):
     datetime = models.DateTimeField(auto_now=True, blank=False, null=False) #todo: auto_now=True
     views = models.PositiveIntegerField(default=0)
     user = models.ForeignKey('youtube.CustomUser', on_delete=models.CASCADE, related_name='users')
-    # genre = models.ForeignKey('youtube.Genre', on_delete=models.CASCADE, related_name='genres')
+    genre = models.ForeignKey('youtube.Genre', on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
@@ -29,8 +37,3 @@ class Complain(models.Model):
     text = models.TextField(max_length=300)
     datetime = models.DateTimeField(auto_now=True, blank=False, null=False)
     state = models.BooleanField(default=False)
-
-
-class Genre(models.Model):
-    text = models.TextField(max_length=20)
-    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='video_id')

@@ -3,7 +3,7 @@ import string
 from wsgiref.util import FileWrapper
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from taggit.models import Tag
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction, DatabaseError
 from django.db.models import F
@@ -13,35 +13,6 @@ from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
 from youtube_python.settings import MEDIA_ROOT
 from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, ComplainForm
 from .models import Video, Comment, Complain, CustomUser, Genre
-
-
-# class ProfileView(View):
-#     template_name = 'profile.html'
-#
-#     def get(self, request):
-#         if not request.user.is_authenticated:
-#             return HttpResponseRedirect('/')
-#         form = UserForm
-#         return render(request, self.template_name, {'form': form})
-#
-#     def post(self, request):
-#         # pass filled out HTML-Form from View to LoginForm()
-#         form = ProfileView(request.POST)
-#         if form.is_valid():
-#             # email = form.cleaned_data['email']
-#             full_name = form.cleaned_data['full_name']
-#             birth = form.cleaned_data['birth']
-#             new_profile = UserProfile(full_name=full_name, birth=birth)
-#             new_profile.user = User
-#             new_profile.save()
-#     if user is not None:
-#         # create a new entry in table 'logs'
-#         login(request, user)
-#         print('success login')
-#         return HttpResponseRedirect('/')
-#     else:
-#         return HttpResponseRedirect('login')
-# return HttpResponse('This is Login view. POST Request.')
 
 
 class VideoFileView(View):
@@ -199,15 +170,19 @@ class NewVideo(View):
             print(fs)
             print(filename)
             print(file_url)
-
+            try:
+                with transaction.atomic():
+                    genre_new = Genre.objects.get_or_create(genre=genre)
+            except DatabaseError:
+                # The transaction has failed. Handle appropriately
+                pass
+            new_genre = Genre.objects.get(genre=genre)
             new_video = Video(title=title,
                               description=description,
                               user=request.user,
-                              path=path)
+                              path=path,
+                              genre_id=new_genre.id)
             new_video.save()
-            print(genre)
-            new_genre = Genre(genre=genre)
-            new_genre.save()
 
             # redirect to detail view template of a Video
             return HttpResponseRedirect('/video/{}'.format(new_video.id))

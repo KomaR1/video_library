@@ -1,10 +1,7 @@
 from django import forms
-YEARS = [x for x in range(1940,2021)]
 
-# class UserForm(forms.Form):
-#     email = forms.CharField(max_length=60)
-#     full_name = forms.CharField(max_length=60)
-#     birth = forms.DateTimeField(label='What is your birth date?', widget=forms.SelectDateWidget)
+
+YEARS = [x for x in range(1940, 2021)]
 
 
 class LoginForm(forms.Form):
