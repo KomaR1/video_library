@@ -3,44 +3,15 @@ import string
 from wsgiref.util import FileWrapper
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction, DatabaseError
+from django.db.models import F
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
 
 from youtube_python.settings import MEDIA_ROOT
 from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, ComplainForm
-from .models import Video, Comment, Complain, UserProfile
-
-
-# class ProfileView(View):
-#     template_name = 'profile.html'
-#
-#     def get(self, request):
-#         if not request.user.is_authenticated:
-#             return HttpResponseRedirect('/')
-#         form = UserForm
-#         return render(request, self.template_name, {'form': form})
-#
-#     def post(self, request):
-#         # pass filled out HTML-Form from View to LoginForm()
-#         form = ProfileView(request.POST)
-#         if form.is_valid():
-#             # email = form.cleaned_data['email']
-#             full_name = form.cleaned_data['full_name']
-#             birth = form.cleaned_data['birth']
-#             new_profile = UserProfile(full_name=full_name, birth=birth)
-#             new_profile.user = User
-#             new_profile.save()
-#     if user is not None:
-#         # create a new entry in table 'logs'
-#         login(request, user)
-#         print('success login')
-#         return HttpResponseRedirect('/')
-#     else:
-#         return HttpResponseRedirect('login')
-# return HttpResponse('This is Login view. POST Request.')
+from .models import Video, Comment, Complain, CustomUser, Genre
 
 
 class VideoFileView(View):
@@ -74,6 +45,8 @@ class VideoView(View):
         video_by_id = Video.objects.get(id=id)
         video_by_id.path = 'http://localhost:8000/get_video/' + video_by_id.path
         context = {'video': video_by_id}
+        Video.objects.filter(pk=video_by_id.pk).update(views=F('views') + 1)
+        video_by_id.views += 1  # to show valid counter in the template
 
         if request.user.is_authenticated:
             print('user signed in')
@@ -150,14 +123,15 @@ class RegisterView(View):
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             full_name = form.cleaned_data['full_name']
+            birth = form.cleaned_data['birth']
             #new_user = User(username=username, email=email)
             #new_user.set_password(password)
             #new_user.save()
             try:
                 with transaction.atomic():
                     # All the database operations within this block are part of the transaction
-                    user = User.objects.create_user(email=email, username=username, password=password)
-                    profile = UserProfile.objects.create(user=user, full_name=full_name)
+                    user = CustomUser.objects.create_user(email=email, username=username, password=password, full_name=full_name, birth=birth)
+                    #profile = UserProfile.objects.create(user=user, full_name=full_name)
             except DatabaseError:
                 # The transaction has failed. Handle appropriately
                 pass
@@ -184,7 +158,7 @@ class NewVideo(View):
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
             file = form.cleaned_data['file']
-
+            genre = form.cleaned_data['genre']
             random_char = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
             path = random_char + file.name
 
@@ -195,11 +169,18 @@ class NewVideo(View):
             print(fs)
             print(filename)
             print(file_url)
-
+            try:
+                with transaction.atomic():
+                    genre_new = Genre.objects.get_or_create(genre=genre)
+            except DatabaseError:
+                # The transaction has failed. Handle appropriately
+                pass
+            new_genre = Genre.objects.get(genre=genre)
             new_video = Video(title=title,
                               description=description,
                               user=request.user,
-                              path=path)
+                              path=path,
+                              genre_id=new_genre.id)
             new_video.save()
 
             # redirect to detail view template of a Video

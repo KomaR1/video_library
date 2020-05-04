@@ -14,7 +14,6 @@ urlpatterns = [
     path('get_video/<file_name>', VideoFileView.as_view()),
     path('logout/', LogoutView.as_view()),
     path('complain/', ComplainView.as_view())
-    #path('profile/', ProfileView.as_view())
 ]
 
 if settings.DEBUG:

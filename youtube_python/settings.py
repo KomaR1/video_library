@@ -57,6 +57,8 @@ TEMPLATES = [
     },
 ]
 
+AUTH_USER_MODEL = 'youtube.CustomUser'
+
 WSGI_APPLICATION = 'youtube_python.wsgi.application'
 
 # Database
