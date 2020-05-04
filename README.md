@@ -1,3 +1,3 @@
 # video_library
-Django Video library with comments, custom users, views, genres and complains
-Test
+All used modules are in requirements.
+Don't forget to use makemigrations and migrate to create your own database :)
