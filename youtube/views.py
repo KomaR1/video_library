@@ -3,7 +3,6 @@ import string
 from wsgiref.util import FileWrapper
 
 from django.contrib.auth import authenticate, login, logout
-from taggit.models import Tag
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction, DatabaseError
 from django.db.models import F

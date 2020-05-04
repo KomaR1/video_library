@@ -15,12 +15,9 @@ Home
           <p class="lead">{{ video.description }}</p>
           <p style="font-size: 8px; color:gray;">Uploaded by {{ video.user }} on {{ video.datetime }} </p>
           <p style="text-align: right"><a href='/video/{{ video.id }}'>Watch Video</a></p>
-            <p class="genre">Genre: {{ video.genre_id }}</p>
-
+            <p class="genre">Genre: {{ video.genre }}</p>
         </div>
-        {% if genre.id == video.genre_id %}
-            <p class="genre">Genre: {{ genre.genre }}
-        {% endif %}
+
 </div>
 {% endfor %}
 
