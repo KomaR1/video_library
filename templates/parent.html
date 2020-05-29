@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>{% block title %}{% endblock %} - Youtube Clone with Python</title>
+        <title>{% block title %}{% endblock %}VideoLibrary</title>
                 <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -23,24 +23,24 @@
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
 
-                        <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="/">Home</a>
+                        <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="/">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/new_video/' %} active {% endif %}" href="/new_video">Upload Video</a>
+                        <a class="nav-link {% if request.path == '/new_video/' %} active {% endif %}" href="/new_video">Добавить видео</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/logout">Log Out!</a>
+                        <a class="nav-link" href="/logout">Выйти!</a>
                     </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/complain/' %} active {% endif %}" href="/complain">Complain</a>
+                            <a class="nav-link {% if request.path == '/complain/' %} active {% endif %}" href="/complain">Пожаловаться</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/login/' %} active {% endif %}" href="/login">Sign In</a>
+                            <a class="nav-link {% if request.path == '/login/' %} active {% endif %}" href="/login">Вход</a>
                         </li>
                     <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/register/' %} active {% endif %}" href="/register">Sign Up</a>
+                            <a class="nav-link {% if request.path == '/register/' %} active {% endif %}" href="/register">Регистрация</a>
                     </li>
                     {% endif %}
                 </ul>

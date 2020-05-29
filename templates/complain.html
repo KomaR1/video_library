@@ -1,13 +1,13 @@
 {% extends "parent.html" %}
 
 {% block title %}
-Create a Complaint
+Создание жалобы
 {% endblock %}
 
 
 {% block body %}
 
-<h1>Create a Complaint</h1><br>
+<h1>Создание жалобы</h1><br>
 
 <form action="" method="POST">
         {% csrf_token %}
@@ -15,6 +15,6 @@ Create a Complaint
                 {{ form.as_table }}
             </table>
         <br>
-            <button type="submit" class="btn btn-primary">Complain</button>
+            <button type="submit" class="btn btn-primary">Пожаловаться</button>
 </form>
 {% endblock %}

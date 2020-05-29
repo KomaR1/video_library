@@ -1,12 +1,12 @@
 {% extends "parent.html" %}
 
 {% block title %}
-Log into your Account
+Войти в свой аккаунт
 {% endblock %}
 
 
 {% block body %}
-    <h1>Log into your Account</h1><br>
+    <h1>Войти в свой аккаунт</h1><br>
 <br>
 <form action="" method="POST" role="form">
     {% csrf_token %}
@@ -14,6 +14,6 @@ Log into your Account
     {{ form.as_table }}
     </table>
     <br>
-    <button type="submit" class="btn btn-primary" role="button">Log In</button>
+    <button type="submit" class="btn btn-primary" role="button">Войти</button>
 </form>
 {% endblock %}

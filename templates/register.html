@@ -1,13 +1,13 @@
 {% extends "parent.html" %}
 
 {% block title %}
-Create a new Account
+Регистрация нового пользователя
 {% endblock %}
 
 
 {% block body %}
 
-<h1>Create a new Account</h1><br>
+<h1>Регистрация нового аккаунта</h1><br>
 
 <form action="" method="POST">
         {% csrf_token %}
@@ -15,6 +15,6 @@ Create a new Account
                 {{ form.as_table }}
             </table>
         <br>
-            <button type="submit" class="btn btn-primary">Create Account!</button>
+            <button type="submit" class="btn btn-primary">Создать аккаунт!</button>
 </form>
 {% endblock %}

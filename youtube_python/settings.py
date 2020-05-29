@@ -18,7 +18,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'youtube',
+    'Видеотека',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,7 +44,7 @@ ROOT_URLCONF = 'youtube_python.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['youtube', 'templates'],
+        'DIRS': ['Видеотека', 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -57,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-AUTH_USER_MODEL = 'youtube.CustomUser'
+AUTH_USER_MODEL = 'Видеотека.CustomUser'
 
 WSGI_APPLICATION = 'youtube_python.wsgi.application'
 
@@ -95,7 +95,8 @@ INTERNAL_IPS = ['127.0.0.1', 'localhost']
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'
+
 
 TIME_ZONE = 'UTC'
 
@@ -112,4 +113,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Upload video files to this folder
-MEDIA_ROOT = '/Users/andrey/PycharmProjects/youtube_project/youtube/media'
+MEDIA_ROOT = '/Users/andrey/PycharmProjects/youtube_project/Видеотека/media'
