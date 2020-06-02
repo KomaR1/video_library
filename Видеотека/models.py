@@ -3,8 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    full_name = models.CharField('ФИО', max_length=60, help_text='Введите ваше ФИО')
     birth = models.DateField('Дата рождения', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Пользователя'
+        verbose_name_plural = 'Пользователи'
 
 
 class Genre(models.Model):
@@ -21,11 +24,12 @@ class Genre(models.Model):
 class Video(models.Model):
     title = models.CharField('Название', max_length=30)
     description = models.TextField('Описание', max_length=300)
-    path = models.CharField('Путь', max_length=60)
+    path = models.CharField('Путь', max_length=300)
     datetime = models.DateTimeField('Дата и время', auto_now=True, blank=False, null=False) #todo: auto_now=True
     views = models.PositiveIntegerField('Просмотры', default=0)
-    user = models.ForeignKey('Видеотека.CustomUser', on_delete=models.CASCADE, related_name='users')
-    genre = models.ForeignKey('Видеотека.Genre', on_delete=models.CASCADE)
+    user = models.ForeignKey('Видеотека.CustomUser', on_delete=models.CASCADE, related_name='users',
+                             verbose_name='Пользователь')
+    genre = models.ForeignKey('Видеотека.Genre', on_delete=models.CASCADE, verbose_name='Жанр')
 
     class Meta:
         verbose_name = 'Видео'
@@ -35,7 +39,7 @@ class Video(models.Model):
 class Comment(models.Model):
     text = models.TextField('Текст', max_length=300)
     datetime = models.DateTimeField('Дата и время', auto_now=True, blank=False, null=False)
-    user = models.ForeignKey('Видеотека.CustomUser', on_delete=models.CASCADE)
+    user = models.ForeignKey('Видеотека.CustomUser', on_delete=models.CASCADE, verbose_name='Пользователь')
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='videos')
 
     class Meta:

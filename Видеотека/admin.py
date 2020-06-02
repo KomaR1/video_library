@@ -13,8 +13,7 @@ class CustomUserAdmin(UserAdmin):
             'Custom Field Heading',  # group heading of your choice; set to None for a blank space instead of a header
             {
                 'fields': (
-                    'full_name',
-                    'birth'
+                    'birth',
                 ),
             },
         ),

@@ -15,5 +15,8 @@
     </table>
     <br>
     <button type="submit" class="btn btn-primary" role="button">Войти</button>
+    {% if form.errors %}
+    <p class="error">Сожалеем, вы неправильно ввели логин или пароль</p>
+  {% endif %}
 </form>
 {% endblock %}

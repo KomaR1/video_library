@@ -4,14 +4,34 @@ from wsgiref.util import FileWrapper
 
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction, DatabaseError
 from django.db.models import F
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+
 
 from youtube_python.settings import MEDIA_ROOT
 from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, ComplainForm
 from .models import Video, Comment, Complain, CustomUser, Genre
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('ru', _('Russian')),
+)
+
+
+# class VideoDeleteView(View):
+#     def delete_video(self, request, id):
+#         template_name = 'new_video.html'
+#         video = get_object_or_404(Video, id=id)
+#         if request.method == 'POST':
+#             video.delete()
+#             context = {'video': video}
+#             form = NewVideoForm(request.POST, instance=video)
+#             return render(request, self.template_name, context)
 
 
 class VideoFileView(View):
@@ -27,8 +47,11 @@ class HomeView(View):
     template_name = 'index.html'
 
     def get(self, request):
-        most_recent_videos = Video.objects.order_by('-datetime')[:8]
-        return render(request, self.template_name, {'most_recent_videos': most_recent_videos})
+        most_recent_videos = Video.objects.order_by('-datetime')
+        paginator = Paginator(most_recent_videos, 10)
+        page = request.GET.get('page')
+        page_obj = paginator.get_page(page)
+        return render(request, self.template_name, {'page_obj': page_obj})
 
 
 class LogoutView(View):
@@ -80,7 +103,7 @@ class LoginView(View):
                 print('success login')
                 return HttpResponseRedirect('/')
             else:
-                return HttpResponseRedirect('login')
+                return HttpResponseRedirect('/login_error')
         return HttpResponse('This is Login view. POST Request.')
 
 
@@ -113,6 +136,7 @@ class RegisterView(View):
         form = RegisterForm()
         return render(request, self.template_name, {'form': form})
 
+    @csrf_exempt
     def post(self, request):
         # pass filled out HTML-Form from View to RegisterForm()
         form = RegisterForm(request.POST)
@@ -122,21 +146,19 @@ class RegisterView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
-            full_name = form.cleaned_data['full_name']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
             birth = form.cleaned_data['birth']
-            #new_user = User(username=username, email=email)
-            #new_user.set_password(password)
-            #new_user.save()
             try:
                 with transaction.atomic():
                     # All the database operations within this block are part of the transaction
-                    user = CustomUser.objects.create_user(email=email, username=username, password=password, full_name=full_name, birth=birth)
-                    #profile = UserProfile.objects.create(user=user, full_name=full_name)
+                    user = CustomUser.objects.create_user(email=email, username=username, password=password,
+                                                          first_name=first_name, last_name=last_name, birth=birth)
             except DatabaseError:
                 # The transaction has failed. Handle appropriately
                 pass
             return HttpResponseRedirect('/login')
-        return HttpResponse('This is Register view. POST Request.')
+        return HttpResponse('Введены некорректные данные')
 
 
 class NewVideo(View):
@@ -208,3 +230,15 @@ class ComplainView(View):
             new_complain.save()
             return HttpResponseRedirect('/')
         return HttpResponse('This is Complain view. POST Request.')
+
+
+class LoginErrorView(View):
+    template_name = 'login_error.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        # pass filled out HTML-Form from View to ComplainForm()
+        print(request.user)
+        return HttpResponseRedirect('/login')

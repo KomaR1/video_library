@@ -8,7 +8,7 @@
 <h1>Добро пожаловать. Снова.</h1><br>
 <br>
 
-{% for video in most_recent_videos %}
+{% for video in page_obj %}
 <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-4">{{ video.title }}</h1>
@@ -19,7 +19,25 @@
         </div>
 
 </div>
+
 {% endfor %}
+    <div class="pagination">
+    <div class="container">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </div>
+</div>
 
 
 {% endblock %}

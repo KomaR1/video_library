@@ -1,0 +1,14 @@
+{% extends "parent.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+    <h1>Неправильный логин или пароль</h1><br>
+<form action="" method="POST">
+        {% csrf_token %}
+        <br>
+            <button type="submit" class="btn btn-primary">Попробовать ещё</button>
+</form>
+{% endblock %}
