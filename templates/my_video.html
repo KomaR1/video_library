@@ -1,0 +1,50 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block body %}
+<h1>Добро пожаловать. Снова.</h1><br>
+
+{% for video in page_obj %}
+<div class="jumbotron jumbotron-fluid">
+
+        <div class="container">
+          <h2 class="display-4">{{ video.title }}</h2>
+
+          <p class="lead">{{ video.description }}</p>
+          <p style="font-size: 8px; color:gray;">Добавлено {{ video.user }}  {{ video.datetime }} </p>
+          <p style="text-align: right"><a href='/video/{{ video.id }}'>Посмотреть видео</a></p>
+            <h3 class="genre">Жанр: {{ video.genre }}</h3>
+            <td><br>
+             <a name="delete_video" class="btn btn-primary" href="/video/{{ video.id }}/delete/">Удалить</a>
+
+
+    </td>
+        </div>
+
+
+</div>
+
+{% endfor %}
+    <div class="pagination">
+    <div class="container">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}

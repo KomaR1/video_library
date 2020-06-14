@@ -7,15 +7,16 @@
 
 {% block body %}
 
-<h2>{{ video.title }}</h2>
+<h1 style="font-size: 25px;">{{ video.title }}</h1>
 
 <video width="320" height="240" controls>
     <source src="{{ video.path }}" type="video/mp4">
   Your browser does not support the video tag.
   </video>
     <br>
-    Просмотры: {{ video.views }}
-<p>{{ video.description }}</p>
+    <h3 style="font-size: 14px; color:gray;">Добавлено {{ video.user }}  {{ video.datetime }} </h3>
+    <h2 style="font-size: 14px;">Просмотры: {{ video.views }} </h2>
+    <h3 style="font-size: 14px;">{{ video.description }}</h3>
 
 <br><br>
 <h3>Комментарии</h3>
@@ -26,7 +27,7 @@
     {{ form }}
     <input type='hidden' name='video' value='{{ video.id }}'>
     <br>
-    <button type="submit" class="btn btn-primary">Добавить комментарий!</button>
+    <button type="submit" name="comment" class="btn btn-primary">Добавить комментарий!</button>
 </form>
 {% endif %}
 

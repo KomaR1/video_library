@@ -29,7 +29,7 @@ class Video(models.Model):
     views = models.PositiveIntegerField('Просмотры', default=0)
     user = models.ForeignKey('Видеотека.CustomUser', on_delete=models.CASCADE, related_name='users',
                              verbose_name='Пользователь')
-    genre = models.ForeignKey('Видеотека.Genre', on_delete=models.CASCADE, verbose_name='Жанр')
+    genre = models.ForeignKey('Видеотека.Genre', on_delete=models.CASCADE, verbose_name=('Жанр'))
 
     class Meta:
         verbose_name = 'Видео'

@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
+
+from Видеотека import views
 from Видеотека.views import HomeView, NewVideo, CommentView, LoginView, RegisterView, VideoView, VideoFileView,\
-    LogoutView, ComplainView, LoginErrorView
+    LogoutView, ComplainView, LoginErrorView, MyVideoView
+from search import views as search_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,7 +18,11 @@ urlpatterns = [
     path('get_video/<file_name>', VideoFileView.as_view()),
     path('logout/', LogoutView.as_view()),
     path('complain/', ComplainView.as_view()),
-    path('login_error/', LoginErrorView.as_view())
+    path('login_error/', LoginErrorView.as_view()),
+    path('search/', search_views.search, name='search'),
+    path('my_videos/', MyVideoView.as_view()),
+    path('video/<int:id>/delete/', views.btn_click),
+
 ]
 
 if settings.DEBUG:

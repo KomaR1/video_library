@@ -4,13 +4,14 @@ from wsgiref.util import FileWrapper
 
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.storage import FileSystemStorage
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from django.db import transaction, DatabaseError
 from django.db.models import F
-from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, get_object_or_404
+from search.documents import VideoDocument
 
 
 from youtube_python.settings import MEDIA_ROOT
@@ -22,17 +23,31 @@ LANGUAGES = (
     ('ru', _('Russian')),
 )
 
+class MyVideoView(View):
+    template_name = 'my_video.html'
 
-# class VideoDeleteView(View):
-#     def delete_video(self, request, id):
-#         template_name = 'new_video.html'
-#         video = get_object_or_404(Video, id=id)
-#         if request.method == 'POST':
-#             video.delete()
-#             context = {'video': video}
-#             form = NewVideoForm(request.POST, instance=video)
-#             return render(request, self.template_name, context)
+    def get(self, request):
+        if request.user.is_authenticated:
+            user_videos = Video.objects.filter(user__id=request.user.id).order_by('-datetime')
+            paginator = Paginator(user_videos, 7)
+            page = request.GET.get('page')
+            page_obj = paginator.get_page(page)
+        else:
+            return HttpResponseRedirect('/login')
 
+        return render(request, self.template_name, {'page_obj': page_obj})
+
+
+# def search(request):
+#
+#     q = request.GET.get('q')
+#
+#     if q:
+#         posts = VideoDocument.search().query("match", title=q)
+#     else:
+#         posts = ''
+#
+#     return render(request, 'index.html', {'posts': posts})
 
 class VideoFileView(View):
 
@@ -48,7 +63,7 @@ class HomeView(View):
 
     def get(self, request):
         most_recent_videos = Video.objects.order_by('-datetime')
-        paginator = Paginator(most_recent_videos, 10)
+        paginator = Paginator(most_recent_videos, 7)
         page = request.GET.get('page')
         page_obj = paginator.get_page(page)
         return render(request, self.template_name, {'page_obj': page_obj})
@@ -72,6 +87,10 @@ class VideoView(View):
         video_by_id.views += 1  # to show valid counter in the template
 
         if request.user.is_authenticated:
+            if video_by_id.user_id == request.user.id:
+                context['user_is_owner'] = True
+            else:
+                context['user_is_owner'] = False
             print('user signed in')
             comment_form = CommentForm()
             context['form'] = comment_form
@@ -79,6 +98,8 @@ class VideoView(View):
         print(comments)
         context['comments'] = comments
         return render(request, self.template_name, context)
+
+
 
 
 class LoginView(View):
@@ -242,3 +263,15 @@ class LoginErrorView(View):
         # pass filled out HTML-Form from View to ComplainForm()
         print(request.user)
         return HttpResponseRedirect('/login')
+
+
+def btn_click(request, id):
+    if request.user.is_authenticated:
+        # if request.user.id == list(Video.objects.filter(pk=id))[0].user_id:
+        video = get_object_or_404(Video, pk=id)
+        video.delete()
+        return HttpResponseRedirect('/my_videos')
+        #else:
+            #return HttpResponse('ПАШОЛ НАХУЙ id не сходятся')
+    else:
+        return HttpResponse('ПАШОЛ НАХУЙ ПРОСТО')
