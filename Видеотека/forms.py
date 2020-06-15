@@ -1,5 +1,4 @@
 from django import forms
-from django.core.validators import validate_email
 
 YEARS = [x for x in range(1940, 2021)]
 
@@ -15,20 +14,7 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(label='Email', max_length=30)
     first_name = forms.CharField(label='Имя', max_length=50)
     last_name = forms.CharField(label='Фамилия', max_length=50)
-    # full_name = forms.CharField(label='ФИО', max_length=60)
     birth = forms.DateField(label='Дата рождения', widget=forms.SelectDateWidget(years=YEARS))
-
-    # def clean_email(self):
-    #     email_passed = self.cleaned_data.get('email')
-    #     email_req = 'yourdomain.com'
-    #     if not email_req in email_passed:
-    #         raise forms.ValidationError('Введён неправильный почтовый адрес.')
-    #     return email_passed
-
-    # def clean_email(self, *args, **kwargs):
-    #     email = self.cleaned_data.get('email')
-    #     if not validate_email(email):
-    #         raise forms.ValidationError('Введите правильный адрес электронной почты.')
 
 
 class CommentForm(forms.Form):

@@ -11,7 +11,6 @@ from django.views.generic.base import View, HttpResponseRedirect, HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
-from search.documents import VideoDocument
 
 
 from youtube_python.settings import MEDIA_ROOT
@@ -37,17 +36,6 @@ class MyVideoView(View):
 
         return render(request, self.template_name, {'page_obj': page_obj})
 
-
-# def search(request):
-#
-#     q = request.GET.get('q')
-#
-#     if q:
-#         posts = VideoDocument.search().query("match", title=q)
-#     else:
-#         posts = ''
-#
-#     return render(request, 'index.html', {'posts': posts})
 
 class VideoFileView(View):
 
@@ -98,8 +86,6 @@ class VideoView(View):
         print(comments)
         context['comments'] = comments
         return render(request, self.template_name, context)
-
-
 
 
 class LoginView(View):
@@ -225,7 +211,6 @@ class NewVideo(View):
                               path=path,
                               genre_id=new_genre.id)
             new_video.save()
-
             # redirect to detail view template of a Video
             return HttpResponseRedirect('/video/{}'.format(new_video.id))
         else:
@@ -267,11 +252,8 @@ class LoginErrorView(View):
 
 def btn_click(request, id):
     if request.user.is_authenticated:
-        # if request.user.id == list(Video.objects.filter(pk=id))[0].user_id:
         video = get_object_or_404(Video, pk=id)
         video.delete()
         return HttpResponseRedirect('/my_videos')
-        #else:
-            #return HttpResponse('ПАШОЛ НАХУЙ id не сходятся')
     else:
-        return HttpResponse('ПАШОЛ НАХУЙ ПРОСТО')
+        return HttpResponse('Вы не являетесь пользователем данной видеотеки')
